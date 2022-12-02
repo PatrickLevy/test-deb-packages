@@ -35,13 +35,26 @@ jobs:
     - name: Create the Sources List
       run: |
         echo "deb [signed-by=/etc/apt/trusted.gpg.d/my_ppa.gpg] deb s3://levy-private-tiered-bucket ./" > my_list_file.list
-    # - name: Push package to draft pre-release
-    #   uses: softprops/action-gh-release@v1
-    #   with:
-    #     draft: true
-    #     prerelease: true
-    #     name: New Levy Release
-    #     token:  ${{ secrets.OPS_GITHUB_BOT_TOKEN }}
-    #     files: |
-    #       ./*.deb
+
+    # Configure AWS for Dev, Sandbox (qa1), and develop-delayed
+    - name: Configure AWS CLI
+      run: |
+        aws configure <<-EOF > /dev/null 2>&1
+        ${{ secrets.AWS_ACCESS_KEY }}
+        ${{ secrets.AWS_SECRET_KEY }}
+        us-east-1
+        text
+        EOF
+    - name: List files
+      run: ls -la
+    
+    # - name: Sync to private s3 bucket
+    #   run: |
+    #       aws s3 cp *.deb s3://levy-private-tiered-bucket
+    #       aws s3 cp *.list s3://levy-private-tiered-bucket
+    #       aws s3 cp InRelease s3://levy-private-tiered-bucket
+    #       aws s3 cp Packages s3://levy-private-tiered-bucket
+
+    #       # aws s3 sync ./dist s3://levy-private-tiered-bucket
+    
 
