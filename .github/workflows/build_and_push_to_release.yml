@@ -32,6 +32,9 @@ jobs:
         gpg --default-key ${{ secrets.GPG_EMAIL }} -abs -o - Release > Release.gpg
         gpg --default-key ${{ secrets.GPG_EMAIL }} --clearsign -o - Release > InRelease
 
+    - name: Create the Sources List
+      run: |
+        echo "deb [signed-by=/etc/apt/trusted.gpg.d/my_ppa.gpg] deb s3://levy-private-tiered-bucket ./" > my_list_file.list
     # - name: Push package to draft pre-release
     #   uses: softprops/action-gh-release@v1
     #   with:
