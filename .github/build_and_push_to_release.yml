@@ -1,0 +1,24 @@
+name: Build Levy Debian Package
+on:
+  workflow_dispatch:
+    
+jobs:
+  build:
+    name: Build debian packages
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2  
+    - name: Build
+      run: |
+        ./build_deb_package.sh
+
+    # - name: Push package to draft pre-release
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     draft: true
+    #     prerelease: true
+    #     name: New Levy Release
+    #     token:  ${{ secrets.OPS_GITHUB_BOT_TOKEN }}
+    #     files: |
+    #       ./*.deb
+
