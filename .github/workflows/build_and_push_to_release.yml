@@ -11,6 +11,18 @@ jobs:
     - name: Build
       run: |
         ./build_deb_packages.sh
+    
+    # Get the key like this:
+    # gpg --list-secret-keys --keyid-format LONG
+    # gpg --export-secret-keys --armor {your_keyId}
+    - name: Import GPG Key
+      uses: crazy-max/ghaction-import-gpg@v1
+      env:
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+    # - name: Setup Repo
+    #   run: ./setup_repo.sh
 
     # - name: Push package to draft pre-release
     #   uses: softprops/action-gh-release@v1
