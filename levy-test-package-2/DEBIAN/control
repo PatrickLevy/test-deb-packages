@@ -1,0 +1,6 @@
+Package: levy-test-package-2
+Version: 1.0.0
+Architecture: all
+Maintainer: patricklevy@exosite.com
+Depends: levy-test-package-1 (>= 1.0.0), jq
+Description: This is a just a test, I repeat...this is just a test

@@ -1,0 +1,20 @@
+#!/bin/bash
+pwd="$PWD"
+cd "$(dirname "$0")"
+
+function usage()
+{
+    printf "usage: levy-test-package-1 say-hello\n"
+}
+
+case "$1" in
+    help)
+      usage $1
+      ;;
+    say-hello)
+      printf "Hello from test package #1!\n"
+      ;;
+    *)
+      usage
+      exit 1
+esac
