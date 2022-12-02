@@ -26,6 +26,12 @@ jobs:
         dpkg-scanpackages --multiversion . > Packages
         gzip -k -f Packages
 
+    - name: Create Release Files
+      run: |
+        apt-ftparchive release . > Release
+        gpg --default-key ${{ secrets.GPG_EMAIL }} -abs -o - Release > Release.gpg
+        gpg --default-key ${{ secrets.GPG_EMAIL }} --clearsign -o - Release > InRelease
+
     # - name: Push package to draft pre-release
     #   uses: softprops/action-gh-release@v1
     #   with:
