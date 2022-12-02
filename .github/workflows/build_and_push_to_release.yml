@@ -34,7 +34,11 @@ jobs:
 
     - name: Create the Sources List
       run: |
-        echo "deb [signed-by=/etc/apt/trusted.gpg.d/my_ppa.gpg] deb s3://levy-private-tiered-bucket ./" > my_list_file.list
+        echo "deb s3://levy-private-tiered-bucket ./" > levy_packages_list_file.list
+    
+    - name: DEBUG
+      run: |
+        cat ./levy_packages_list_file.list
 
     # Configure AWS for Dev, Sandbox (qa1), and develop-delayed
     - name: Configure AWS CLI
@@ -48,13 +52,13 @@ jobs:
     - name: List files
       run: ls -la
     
-    # - name: Sync to private s3 bucket
-    #   run: |
-    #       aws s3 cp *.deb s3://levy-private-tiered-bucket
-    #       aws s3 cp *.list s3://levy-private-tiered-bucket
-    #       aws s3 cp InRelease s3://levy-private-tiered-bucket
-    #       aws s3 cp Packages s3://levy-private-tiered-bucket
-
-    #       # aws s3 sync ./dist s3://levy-private-tiered-bucket
-    
-
+    - name: Sync to private s3 bucket
+      run: |
+          aws s3 cp InRelease s3://levy-private-tiered-bucket
+          aws s3 cp Packages s3://levy-private-tiered-bucket
+          aws s3 cp Packages.gz s3://levy-private-tiered-bucket
+          aws s3 cp Release s3://levy-private-tiered-bucket
+          aws s3 cp Release.gpg s3://levy-private-tiered-bucket
+          aws s3 cp . s3://levy-private-tiered-bucket/ --recursive --exclude "*" --include "*.deb"
+          aws s3 cp . s3://levy-private-tiered-bucket/ --recursive --exclude "*" --include "*.list"
+          aws s3 cp public_key.pub s3://levy-private-tiered-bucket
