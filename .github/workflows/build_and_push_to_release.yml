@@ -21,8 +21,10 @@ jobs:
         GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-    # - name: Setup Repo
-    #   run: ./setup_repo.sh
+    - name: Setup Repo
+      run: |
+        dpkg-scanpackages --multiversion . > Packages
+        gzip -k -f Packages
 
     # - name: Push package to draft pre-release
     #   uses: softprops/action-gh-release@v1
