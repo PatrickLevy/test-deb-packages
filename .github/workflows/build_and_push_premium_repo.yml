@@ -1,4 +1,4 @@
-name: Build Levy Debian Package
+name: Build Levy Premium Debian Package
 on:
   workflow_dispatch:
     
@@ -10,8 +10,15 @@ jobs:
     - uses: actions/checkout@v2  
     - name: Build
       run: |
-        ./build_deb_packages.sh
+        mkdir premium
+        printf "\nBuilding levy-test-package-2 deb package...\n"
+        dpkg-deb --build --root-owner-group levy-test-package-2
 
+        printf "\nRenaming package according to conventions...\n"
+        dpkg-name -o "levy-test-package-2.deb"
+        
+        mv *.deb ./premium
+    
     # Get the key like this:
     # gpg --list-secret-keys --keyid-format LONG
     # gpg --export-secret-keys --armor {your_keyId}
@@ -21,24 +28,28 @@ jobs:
         GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-    - name: Setup Repo
+    - name: Setup Premium Repo
       run: |
+        cd premium
         dpkg-scanpackages --multiversion . > Packages
         gzip -k -f Packages
 
     - name: Create Release Files
       run: |
+        cd premium
         apt-ftparchive release . > Release
         gpg --default-key ${{ secrets.GPG_EMAIL }} -abs -o - Release > Release.gpg
         gpg --default-key ${{ secrets.GPG_EMAIL }} --clearsign -o - Release > InRelease
 
     - name: Create the Sources List
       run: |
-        echo "deb s3://levy-private-tiered-bucket ./" > levy_packages_list_file.list
+        cd premium
+        echo "deb s3://levy-private-tiered-bucket/premium /" > levy_packages_premium.list
     
     - name: DEBUG
       run: |
-        cat ./levy_packages_list_file.list
+        cd premium
+        cat ./levy_packages_premium.list
 
     # Configure AWS for Dev, Sandbox (qa1), and develop-delayed
     - name: Configure AWS CLI
@@ -50,15 +61,11 @@ jobs:
         text
         EOF
     - name: List files
-      run: ls -la
+      run: |
+        cd premium
+        ls -la
     
     - name: Sync to private s3 bucket
       run: |
-          aws s3 sync InRelease s3://levy-private-tiered-bucket
-          aws s3 sync Packages s3://levy-private-tiered-bucket
-          aws s3 sync Packages.gz s3://levy-private-tiered-bucket
-          aws s3 sync Release s3://levy-private-tiered-bucket
-          aws s3 sync Release.gpg s3://levy-private-tiered-bucket
-          aws s3 sync . s3://levy-private-tiered-bucket/ --recursive --exclude "*" --include "*.deb"
-          aws s3 sync . s3://levy-private-tiered-bucket/ --recursive --exclude "*" --include "*.list"
-          aws s3 sync public_key.pub s3://levy-private-tiered-bucket
+        aws s3 cp ./public_key.pub s3://levy-private-tiered-bucket/premium/
+        aws s3 sync ./premium s3://levy-private-tiered-bucket/premium
