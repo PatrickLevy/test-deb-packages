@@ -54,11 +54,11 @@ jobs:
     
     - name: Sync to private s3 bucket
       run: |
-          aws s3 cp InRelease s3://levy-private-tiered-bucket
-          aws s3 cp Packages s3://levy-private-tiered-bucket
-          aws s3 cp Packages.gz s3://levy-private-tiered-bucket
-          aws s3 cp Release s3://levy-private-tiered-bucket
-          aws s3 cp Release.gpg s3://levy-private-tiered-bucket
-          aws s3 cp . s3://levy-private-tiered-bucket/ --recursive --exclude "*" --include "*.deb"
-          aws s3 cp . s3://levy-private-tiered-bucket/ --recursive --exclude "*" --include "*.list"
-          aws s3 cp public_key.pub s3://levy-private-tiered-bucket
+          aws s3 sync InRelease s3://levy-private-tiered-bucket
+          aws s3 sync Packages s3://levy-private-tiered-bucket
+          aws s3 sync Packages.gz s3://levy-private-tiered-bucket
+          aws s3 sync Release s3://levy-private-tiered-bucket
+          aws s3 sync Release.gpg s3://levy-private-tiered-bucket
+          aws s3 sync . s3://levy-private-tiered-bucket/ --recursive --exclude "*" --include "*.deb"
+          aws s3 sync . s3://levy-private-tiered-bucket/ --recursive --exclude "*" --include "*.list"
+          aws s3 sync public_key.pub s3://levy-private-tiered-bucket
