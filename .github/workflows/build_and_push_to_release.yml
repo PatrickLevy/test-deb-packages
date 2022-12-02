@@ -10,7 +10,7 @@ jobs:
     - uses: actions/checkout@v2  
     - name: Build
       run: |
-        ./build_deb_package.sh
+        ./build_deb_packages.sh
 
     # - name: Push package to draft pre-release
     #   uses: softprops/action-gh-release@v1
