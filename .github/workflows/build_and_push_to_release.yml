@@ -40,7 +40,7 @@ jobs:
       run: |
         cat ./levy_packages_list_file.list
 
-    # Configure AWS for Dev, Sandbox (qa1), and develop-delayed
+    # Configure AWS
     - name: Configure AWS CLI
       run: |
         aws configure <<-EOF > /dev/null 2>&1

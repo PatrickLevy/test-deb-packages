@@ -51,7 +51,7 @@ jobs:
         cd premium
         cat ./levy_packages_premium.list
 
-    # Configure AWS for Dev, Sandbox (qa1), and develop-delayed
+    # Configure AWS
     - name: Configure AWS CLI
       run: |
         aws configure <<-EOF > /dev/null 2>&1

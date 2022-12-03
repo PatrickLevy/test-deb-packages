@@ -1,0 +1,47 @@
+name: Build Levy Basic Debian Package (deb-s3)
+on:
+  workflow_dispatch:
+    
+jobs:
+  build:
+    name: Build debian packages
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2  
+    - name: Build
+      run: |
+        mkdir basic
+        printf "\nBuilding levy-test-package-1 deb package...\n"
+        dpkg-deb --build --root-owner-group levy-test-package-1
+
+        printf "\nRenaming package according to conventions...\n"
+        dpkg-name -o "levy-test-package-1.deb"
+        
+        mv *.deb ./basic
+    
+    # Get the key like this:
+    # gpg --list-secret-keys --keyid-format LONG
+    # gpg --export-secret-keys --armor {your_keyId}
+    - name: Import GPG Key
+      uses: crazy-max/ghaction-import-gpg@v1
+      env:
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+    - name: Install deb-s3
+      run: |
+        sudo gem install deb-s3
+    
+    - name: Upload debs to s3
+      run: |
+        cd basic
+        ls -la
+        deb-s3 upload \
+        --sign=${{ secrets.GPG_SIGNING_KEY_ID }} \
+        --bucket levy-private-tiered-bucket \
+        --s3-region us-east-1 \
+        --visibility private \
+        --prefix basic \
+        --access-key-id ${{ secrets.AWS_ACCESS_KEY }} \
+        --secret-access-key ${{ secrets.AWS_SECRET_KEY }} \
+        *.deb
