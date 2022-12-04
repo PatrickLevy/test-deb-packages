@@ -37,6 +37,7 @@ jobs:
         cd basic
         ls -la
         deb-s3 upload \
+        --preserve-versions \
         --codename jammy \
         --sign ${{ secrets.GPG_SIGNING_KEY_ID }} \
         --bucket levy-private-tiered-bucket \
