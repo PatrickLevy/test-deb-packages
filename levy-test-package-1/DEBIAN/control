@@ -1,5 +1,5 @@
 Package: levy-test-package-1
-Version: 1.0.0
+Version: 1.0.1
 Architecture: all
 Maintainer: patricklevy@exosite.com
 Depends: jq
