@@ -26,3 +26,8 @@ curl -s --compressed "https://levy-private-tiered-bucket.s3.amazonaws.com/public
 
 deb s3://levy-private-tiered-bucket/basic/ jammy main
 ```
+5. Install a test package:
+```
+sudo apt-get update
+sudo apt-get install levy-test-package-1
+```
