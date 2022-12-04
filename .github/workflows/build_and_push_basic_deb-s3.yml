@@ -37,7 +37,7 @@ jobs:
         cd basic
         ls -la
         deb-s3 upload \
-        --codename jammy
+        --codename jammy \
         --sign ${{ secrets.GPG_SIGNING_KEY_ID }} \
         --bucket levy-private-tiered-bucket \
         --s3-region us-east-1 \
